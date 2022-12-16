@@ -1,8 +1,8 @@
 import throttle from 'lodash.throttle';
 const form = document.querySelector('.feedback-form');
-const dataForm = {};
+
 const USER_FDBC = "feedback-form-state";
-console.dir(form)
+const dataForm = JSON.parse(localStorage.getItem(USER_FDBC)) || {};
 form.addEventListener('submit', onFormSubmit);
 form.addEventListener('input', throttle(onInputType, 500));
 
@@ -10,18 +10,25 @@ function onInputType(e) {
     dataForm[e.target.name] = e.target.value;
     localStorage.setItem(USER_FDBC, JSON.stringify(dataForm));
 };
-populateForm();
 
 function onFormSubmit(e) {
     e.preventDefault();
-    localStorage.removeItem(USER_FDBC);
     console.log(dataForm);
-    e.target.reset();
+    form.reset();
+    localStorage.removeItem(USER_FDBC);
+
 };
-function populateForm() {
-    const savedData = JSON.parse(localStorage.getItem(USER_FDBC));
-    if (savedData) {
-        form[0].value = savedData.email;
-        form[1].textContent = savedData.message;
+
+(function () {
+    try {
+        const savedData = localStorage.getItem(USER_FDBC);
+        const parseData = JSON.parse(savedData);
+
+        if (parseData) {
+            form[0].value = parseData.email;
+            form[1].value = parseData.message;
+        };
+    } catch (error) {
+        console.error("Get state error: ", error.message);
     };
-};
+})();
