@@ -25,8 +25,8 @@ function onFormSubmit(e) {
         const parseData = JSON.parse(savedData);
 
         if (parseData) {
-            form[0].value = parseData.email;
-            form[1].value = parseData.message;
+            form[0].value = parseData.email || '';
+            form[1].value = parseData.message || '';
         };
     } catch (error) {
         console.error("Get state error: ", error.message);
